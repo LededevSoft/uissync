@@ -1,0 +1,31 @@
+{
+    "name": "lebedevsoft/uissync",
+    "description": "Uis sync data to DB",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "LebedevSoft\\UisSync\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Lebedev Alexandr",
+            "email": "lebedev_as@bk.ru"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.3",
+        "lebedevsoft/uis-laravel": "^1.1"
+    },
+    "require-dev": {
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "LebedevSoft\\UisSync\\UisSyncServiceProvider"
+            ]
+        }
+    }
+}
