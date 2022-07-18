@@ -1,7 +1,7 @@
 <?php
 
 namespace LebedevSoft\UisSync;
-use LebedevSoft\AmoSync\Console\Commands\UisSync;
+use LebedevSoft\UisSync\Console\Commands\UisSync;
 use Illuminate\Support\ServiceProvider;
 
 class UisSyncServiceProvider extends ServiceProvider
