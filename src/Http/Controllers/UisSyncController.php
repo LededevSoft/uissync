@@ -1,13 +1,13 @@
 <?php
 
-namespace Adminka\UisSync\Http\Controllers;
+namespace LebedevSoft\UisSync\Http\Controllers;
 
-use Adminka\AmoCRM\Libs\Uis;
-use Adminka\AmoSync\Models\UisCalls_report;
-use Adminka\AmoSync\Models\UisCall_legs_report;
-use Adminka\AmoSync\Models\UisEmployees;
-use Adminka\AmoSync\Models\UisTags;
-use Adminka\AmoSync\Models\UisStatuses;
+use LebedevSoft\AmoCRM\Libs\Uis;
+use LebedevSoft\AmoSync\Models\UisCalls_report;
+use LebedevSoft\AmoSync\Models\UisCall_legs_report;
+use LebedevSoft\AmoSync\Models\UisEmployees;
+use LebedevSoft\AmoSync\Models\UisTags;
+use LebedevSoft\AmoSync\Models\UisStatuses;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;

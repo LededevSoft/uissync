@@ -1,8 +1,8 @@
 <?php
 
-namespace Adminka\UisSync\Console\Commands;
+namespace LebedevSoft\UisSync\Console\Commands;
 
-use Adminka\UisSync\Http\Controllers\UisSyncController;
+use LebedevSoft\UisSync\Http\Controllers\UisSyncController;
 use Illuminate\Console\Command;
 
 class UisSync extends Command
