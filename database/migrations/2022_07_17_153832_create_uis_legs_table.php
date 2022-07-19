@@ -13,7 +13,7 @@ class CreateUisLegsTable extends Migration
      */
     public function up()
     {
-        Schema::create('uis_call_legs_report', function (Blueprint $table) {
+        Schema::create('uis_call_legs_reports', function (Blueprint $table) {
             $table->string("id")->primary();
             $table->integer("duration")->nullable();
             $table->string("group_id")->nullable();
@@ -40,6 +40,6 @@ class CreateUisLegsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('uis_call_legs_report');
+        Schema::dropIfExists('uis_call_legs_reports');
     }
 }

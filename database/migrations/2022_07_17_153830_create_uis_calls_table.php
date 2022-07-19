@@ -13,7 +13,7 @@ class CreateUisCallsTable extends Migration
      */
     public function up()
     {
-        Schema::create('uis_calls_report', function (Blueprint $table) {
+        Schema::create('uis_calls_reports', function (Blueprint $table) {
             $table->string("id")->primary();
             $table->string("source")->nullable();
             $table->boolean("is_lost")->nullable();
@@ -41,6 +41,6 @@ class CreateUisCallsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('uis_calls_report');
+        Schema::dropIfExists('uis_calls_reports');
     }
 }

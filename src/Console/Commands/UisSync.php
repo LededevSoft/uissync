@@ -16,6 +16,7 @@ class UisSync extends Command
                                 {--all : For sync all data}            
 								{--calls_report : For sync chats}
                                 {--call_legs_report : For sync contacts}
+								{--full : For sync data from all time}
                                 {--time_range=1 : Set day number for data sync (integer)}
                                 {--statuses : For sync statuses}
 								{--employees : For sync employees}
@@ -52,13 +53,16 @@ class UisSync extends Command
         } else {
             $date_range = $options["time_range"];
         }
-        if ($options["calls"]) {
-            $amo->loadAmoCalls($date_range);
-        } elseif ($options["contacts"]) {
-            $amo->loadAmoContacts($date_range);
-		}elseif ($options["notes"]) {
-            $amo->loadAmoNotesLeads($date_range);
-			$amo->loadAmoNotesContacts($date_range);
+        if ($options["employees"]) {
+           $uis->loadUisEmployees();
+        } elseif ($options["tags"]) {
+            $uis->loadUisTags();
+		} elseif ($options["statuses"]) {
+            $uis->loadUisStatuses();	
+		}elseif ($options["calls_report"]) {
+           $uis->loadUisCall_legs_report($date_range);
+		}elseif ($options["call_legs_report"]) {
+           $uis->loadUisCall_legs_report($date_range);   
 		} elseif ($options["all"]) {
             $uis->loadUisEmployees();
             $uis->loadUisTags();

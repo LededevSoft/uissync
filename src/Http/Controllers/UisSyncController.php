@@ -2,12 +2,12 @@
 
 namespace LebedevSoft\UisSync\Http\Controllers;
 
-use LebedevSoft\AmoCRM\Libs\Uis;
-use LebedevSoft\AmoSync\Models\UisCalls_report;
-use LebedevSoft\AmoSync\Models\UisCall_legs_report;
-use LebedevSoft\AmoSync\Models\UisEmployees;
-use LebedevSoft\AmoSync\Models\UisTags;
-use LebedevSoft\AmoSync\Models\UisStatuses;
+use LebedevSoft\Uis\Libs\Uis;
+use LebedevSoft\UisSync\Models\UisCalls_reports;
+use LebedevSoft\UisSync\Models\UisCall_legs_reports;
+use LebedevSoft\UisSync\Models\UisEmployees;
+use LebedevSoft\UisSync\Models\UisTags;
+use LebedevSoft\UisSync\Models\UisStatuses;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -26,24 +26,24 @@ class UisSyncController extends Controller
     function loadUisCalls_report($date_range = null)
     {
         print_r("Start uis calls_report synchronization\n");
-        $db_calls_report = new UisCalls_report();
+        $db_calls_report = new UisCalls_reports();
 
             if ($date_range) {
                 $date_till = date("Y-m-d 00:01:00");
-				$date_from=date("Y-m-d 23:59:00", strtotime($date_till.'- '.$date_range.' days'));
+				$date_from=date("Y-m-d 00:01:00", strtotime($date_till.'- '.$date_range.' days'));
 
             }
 			else
 			{
 				$date_till = date("Y-m-d 00:01:00");
-				$date_from=date("Y-m-d 23:59:00", strtotime($date_till.'- 1000 days'));
+				$date_from=date("Y-m-d 00:01:00", strtotime($date_till.'- 1000 days'));
 			}
 			
             $get = true;
             $page = 0;
             $total_calls = 0;
             while ($get) {
-                $uis_calls = $this->amo->getCalls_report($date_from, $date_till, $page);
+                $uis_calls = $this->uis->getCalls_report($date_from, $date_till, $page);
                 if (!empty($uis_calls)) {
                     $call_list = null;
                     $total_calls += sizeof($uis_calls["result"]["data"]);
@@ -55,7 +55,7 @@ class UisSyncController extends Controller
 							"direction" => $call["direction"],
                             "start_time" => strtotime($call["start_time"]),
 							"finish_time" => strtotime($call["finish_time"]),
-							"call_records" => $call["call_records"][0],
+							"call_records" => empty($call["call_records"]) ? null : $call["call_records"][0],
 							"cpn_region_id" => $call["cpn_region_id"],
 							"talk_duration" => $call["talk_duration"],
 							"wait_duration" => $call["wait_duration"],
@@ -89,24 +89,24 @@ class UisSyncController extends Controller
     function loadUisCall_legs_report($date_range = null)
     {
         print_r("Start uis call_legs_report synchronization\n");
-        $db_calls_report = new UisCall_legs_report();
+        $db_calls_report = new UisCall_legs_reports();
 
             if ($date_range) {
                 $date_till = date("Y-m-d 00:01:00");
-				$date_from=date("Y-m-d 23:59:00", strtotime($date_till.'- '.$date_range.' days'));
+				$date_from=date("Y-m-d 00:01:00", strtotime($date_till.'- '.$date_range.' days'));
 
             }
 			else
 			{
 				$date_till = date("Y-m-d 00:01:00");
-				$date_from=date("Y-m-d 23:59:00", strtotime($date_till.'- 1000 days'));
+				$date_from=date("Y-m-d 00:01:00", strtotime($date_till.'- 1000 days'));
 			}
 			
             $get = true;
             $page = 0;
             $total_calls = 0;
             while ($get) {
-                $uis_calls = $this->amo->getCall_legs_report($date_from, $date_till, $page);
+                $uis_calls = $this->uis->getCall_legs_report($date_from, $date_till, $page);
                 if (!empty($uis_calls)) {
                     $call_list = null;
                     $total_calls += sizeof($uis_calls["result"]["data"]);
@@ -157,15 +157,15 @@ class UisSyncController extends Controller
         $employees_list = null;
          if (!empty($uis_employees["result"]["data"])) {    
         foreach ($uis_employees["result"]["data"] as $employee) {
-            $tmp_employees = [
+            $tmp_employee = [
                 "id" => $employee["id"],
                 "full_name" => $employee["full_name"],
-			    "email" => $employee["email"],
-                "group_id" => $employee["groups"]["group_id"],
-                "group_name" => $employee["groups"]["group_name"],
+			    "email" => empty($employee["email"]) ? null : $employee["email"],
+                "group_id" => empty($employee["groups"]) ? null : $employee["groups"][0]["group_id"],
+                "group_name" => empty($employee["groups"]) ? null : $employee["groups"][0]["group_name"],
                 "status_id" => $employee["status_id"],
-				"extension_phone_number" => $employee["extension"]["phone_number"],
-				"phone_number" => $employee["phone_numbers"]["phone_number"]
+				"extension_phone_number" => empty($employee["extension"]) ? null : $employee["extension"]["extension_phone_number"],
+				"phone_number" => empty($employee["phone_numbers"]) ? null : $employee["phone_numbers"][0]["phone_number"],
             ];
 
             $employees_list[] = $tmp_employee;
@@ -188,8 +188,8 @@ class UisSyncController extends Controller
             $tmp_tag = [
                 "id" => $tag["id"],
                 "name" => $tag["name"],
-                "rating" => $user["rating"],
-                "is_system" => $user["is_system"]
+                "rating" => $tag["rating"],
+                "is_system" => $tag["is_system"]
             ];
 
             $tags_list[] = $tmp_tag;
@@ -213,18 +213,17 @@ class UisSyncController extends Controller
                 "id" => $status["id"],
                 "name" => $status["name"],
                 "color" => $status["color"],
-                "mnemonic" => $status["mnemonic"],
 				"priority" => $status["priority"],
                 "is_deleted" => $status["is_deleted"],
                 "description" => $status["description"],
 				"is_worktime" => $status["is_worktime"]				
             ];
 
-            $Statuses_list[] = $tmp_status;
+            $statuses_list[] = $tmp_status;
         }
       
         $db_statuses = new UisStatuses();
-        $db_statuses->upsert($statuses_list, ['id'], ['name', 'color', 'mnemonic', 'priority', 'is_deleted', 'description', 'is_worktime']);
+        $db_statuses->upsert($statuses_list, ['id'], ['name', 'color', 'priority', 'is_deleted', 'description', 'is_worktime']);
 		 }
         print_r("End uis statuses synchronization\n");
     }
