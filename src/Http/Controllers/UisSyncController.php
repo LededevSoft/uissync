@@ -3,8 +3,8 @@
 namespace LebedevSoft\UisSync\Http\Controllers;
 
 use LebedevSoft\Uis\Libs\Uis;
-use LebedevSoft\UisSync\Models\UisCalls_reports;
-use LebedevSoft\UisSync\Models\UisCall_legs_reports;
+use LebedevSoft\UisSync\Models\UisCallsReports;
+use LebedevSoft\UisSync\Models\UisCallLegsReports;
 use LebedevSoft\UisSync\Models\UisEmployees;
 use LebedevSoft\UisSync\Models\UisTags;
 use LebedevSoft\UisSync\Models\UisStatuses;
@@ -26,9 +26,9 @@ class UisSyncController extends Controller
     function loadUisCalls_report($date_range = null)
     {
         print_r("Start uis calls_report synchronization\n");
-        $db_calls_report = new UisCalls_reports();
+        $db_calls_report = new UisCallsReports();
 
-            if ($date_range) {
+            if (isset($date_range)) {
                 $date_till = date("Y-m-d 00:01:00");
 				$date_from=date("Y-m-d 00:01:00", strtotime($date_till.'- '.$date_range.' days'));
 
@@ -43,8 +43,8 @@ class UisSyncController extends Controller
             $page = 0;
             $total_calls = 0;
             while ($get) {
-                $uis_calls = $this->uis->getCalls_report($date_from, $date_till, $page);
-                if (!empty($uis_calls)) {
+                $uis_calls = $this->uis->getCallsReport($date_from, $date_till, $page);
+                if (!empty($uis_calls["result"]["data"])) {
                     $call_list = null;
                     $total_calls += sizeof($uis_calls["result"]["data"]);
                     foreach ($uis_calls["result"]["data"] as $call) {
@@ -53,8 +53,8 @@ class UisSyncController extends Controller
                             "source" => $call["source"],
                             "is_lost" => $call["is_lost"],
 							"direction" => $call["direction"],
-                            "start_time" => strtotime($call["start_time"]),
-							"finish_time" => strtotime($call["finish_time"]),
+                            "start_time" => $call["start_time"],
+							"finish_time" => $call["finish_time"],
 							"call_records" => empty($call["call_records"]) ? null : $call["call_records"][0],
 							"cpn_region_id" => $call["cpn_region_id"],
 							"talk_duration" => $call["talk_duration"],
@@ -66,7 +66,6 @@ class UisSyncController extends Controller
 							"contact_phone_number" => $call["contact_phone_number"],
 							"virtual_phone_number" => $call["virtual_phone_number"]
     
-                           // "phone" => empty($call["params"]["phone"]) ? null : $call["params"]["phone"],
 
                         ];
                         $call_list[] = $tmp_call;
@@ -74,14 +73,14 @@ class UisSyncController extends Controller
                     $db_calls_report->upsert($call_list, ['id'], ['source', 'is_lost', 'direction', 'start_time',
                         'finish_time', 'call_records', 'cpn_region_id', 'talk_duration', 'wait_duration', 'total_duration', 'cpn_region_name',
                         'cpn_region_name', 'communication_id', 'communication_type', 'contact_phone_number', 'virtual_phone_number']);
-                
+                }
                 print_r("Page - $page, calls_report number - $total_calls\n");
-                if (isset($uis_calls["result"]["data"])) {
+      
+			     if (isset($uis_calls["result"]["data"])) {
                     $page++;
                 } else {
                     $get = false;
                 }
-             }
         }
         print_r("End uis calls_report synchronization\n");
     }
@@ -89,9 +88,9 @@ class UisSyncController extends Controller
     function loadUisCall_legs_report($date_range = null)
     {
         print_r("Start uis call_legs_report synchronization\n");
-        $db_calls_report = new UisCall_legs_reports();
+        $db_call_legs_report = new UisCallLegsReports();
 
-            if ($date_range) {
+            if (isset($date_range)) {
                 $date_till = date("Y-m-d 00:01:00");
 				$date_from=date("Y-m-d 00:01:00", strtotime($date_till.'- '.$date_range.' days'));
 
@@ -102,16 +101,16 @@ class UisSyncController extends Controller
 				$date_from=date("Y-m-d 00:01:00", strtotime($date_till.'- 1000 days'));
 			}
 			
-            $get = true;
-            $page = 0;
-            $total_calls = 0;
-            while ($get) {
-                $uis_calls = $this->uis->getCall_legs_report($date_from, $date_till, $page);
-                if (!empty($uis_calls)) {
+            $get_legs = true;
+            $page_legs = 0;
+            $total_calls_legs = 0;
+            while ($get_legs) {
+                $uis_call_legs_report = $this->uis->getCallLegsReport($date_from, $date_till, $page_legs);
+                if (!empty($uis_call_legs_report["result"]["data"])) {
                     $call_list = null;
-                    $total_calls += sizeof($uis_calls["result"]["data"]);
-                    foreach ($uis_calls["result"]["data"] as $call) {
-                        $tmp_call = [
+                    $total_calls_legs += sizeof($uis_call_legs_report["result"]["data"]);
+                    foreach ($uis_call_legs_report["result"]["data"] as $call) {
+                        $tmp_call_legs = [
                             "id" => $call["id"],
                             "duration" => $call["duration"],
                             "group_id" => $call["group_id"],
@@ -120,7 +119,7 @@ class UisSyncController extends Controller
 							"direction" => $call["direction"],
 							"is_failed" => $call["is_failed"],
 							"group_name" => $call["group_name"],
-                            "start_time" => strtotime($call["start_time"]),
+                            "start_time" => $call["start_time"],
 							"action_name" => $call["action_name"],
 							"employee_id" => $call["employee_id"],
 							"call_session_id" => $call["call_session_id"],
@@ -128,24 +127,22 @@ class UisSyncController extends Controller
 							"finish_reason" => $call["finish_reason"],
 							"calling_phone_number" => $call["calling_phone_number"],
 							"virtual_phone_number" => $call["virtual_phone_number"]
-
-                           // "phone" => empty($call["params"]["phone"]) ? null : $call["params"]["phone"],
-
                         ];
-                        $call_list[] = $tmp_call;
+                        $call_list[] = $tmp_call_legs;
                     }
-                    $db_calls_report->upsert($call_list, ['id'], ['duration', 'group_id', 'is_coach', 'action_id',
+                    $db_call_legs_report->upsert($call_list, ['id'], ['duration', 'group_id', 'is_coach', 'action_id',
                         'direction', 'is_failed', 'group_name', 'start_time', 'action_name', 'employee_id', 'call_session_id',
                         'total_duration', 'finish_reason', 'calling_phone_number', 'virtual_phone_number']);
                 }
-                print_r("Page - $page, call_legs_report number - $total_calls\n");
-                if (isset($uis_calls["result"]["data"])) {
+                print_r("Page - $page_legs, call_legs_report number - $total_calls_legs\n");
+				
+                if (isset($uis_call_legs_report["result"]["data"])) {
                     $page++;
                 } else {
-                    $get = false;
+                    $get_legs = false;
                 }
             }
-        
+
         print_r("End uis call_legs_report synchronization\n");
     }
 	public

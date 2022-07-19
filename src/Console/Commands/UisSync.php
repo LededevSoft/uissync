@@ -14,8 +14,8 @@ class UisSync extends Command
      */
     protected $signature = 'uis:sync
                                 {--all : For sync all data}            
-								{--calls_report : For sync chats}
-                                {--call_legs_report : For sync contacts}
+								{--calls_report : For sync calls}
+                                {--call_legs_report : For sync call legs}
 								{--full : For sync data from all time}
                                 {--time_range=1 : Set day number for data sync (integer)}
                                 {--statuses : For sync statuses}
@@ -60,15 +60,16 @@ class UisSync extends Command
 		} elseif ($options["statuses"]) {
             $uis->loadUisStatuses();	
 		}elseif ($options["calls_report"]) {
-           $uis->loadUisCall_legs_report($date_range);
+           $uis->loadUisCallsReport($date_range);
 		}elseif ($options["call_legs_report"]) {
-           $uis->loadUisCall_legs_report($date_range);   
+           $uis->loadUisCallLegsReport($date_range);   
 		} elseif ($options["all"]) {
             $uis->loadUisEmployees();
             $uis->loadUisTags();
             $uis->loadUisStatuses();
-			$uis->loadUisCalls_report($date_range);
-			$uis->loadUisCall_legs_report($date_range);
+			$uis->loadUisCallLegsReport($date_range);
+			$uis->loadUisCallsReport($date_range);
+			
         } else {
             print_r("Not supported command\n");
         }
