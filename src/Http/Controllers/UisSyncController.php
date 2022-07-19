@@ -23,7 +23,7 @@ class UisSyncController extends Controller
     }
 
     public
-    function loadUisCalls_report($date_range = null)
+    function loadUisCallsReport($date_range = null)
     {
         print_r("Start uis calls_report synchronization\n");
         $db_calls_report = new UisCallsReports();
@@ -85,7 +85,7 @@ class UisSyncController extends Controller
         print_r("End uis calls_report synchronization\n");
     }
 	public
-    function loadUisCall_legs_report($date_range = null)
+    function loadUisCallLegsReport($date_range = null)
     {
         print_r("Start uis call_legs_report synchronization\n");
         $db_call_legs_report = new UisCallLegsReports();
