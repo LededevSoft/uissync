@@ -27,22 +27,14 @@ class UisSyncController extends Controller
     {
         print_r("Start uis calls_report synchronization\n");
         $db_calls_report = new UisCallsReports();
-        date_default_timezone_set('Europe/Moscow');
-		
+       
             if (isset($date_range)) {
-				if ($date_range==0){
-                $date_till = date("Y-m-d H:00:00");
-				$date_from = date("Y-m-d H:00:00", strtotime($date_till.'- 1 hours'));
-				$days=1;
-				$hour=1;
-				}
 				if ($date_range==1){
                 $date_till = date("Y-m-d 00:00:00");
 				$date_from = date("Y-m-d 00:00:00", strtotime($date_till.'- '.$date_range.' days'));
 				$days=1;
-				$hour=24;
 				}
-				if(!is_numeric($date_range))
+				else
 				{			    
 				$date_from = date("Y-m-d 00:00:00", strtotime(explode("/",$date_range)[0]));
 				$date_till = date("Y-m-d 00:00:00", strtotime(explode("/",$date_range)[1]));
@@ -50,7 +42,6 @@ class UisSyncController extends Controller
 				$years   = floor($diff / (365*60*60*24)); 
                 $months  = floor(($diff - $years * 365*60*60*24) / (30*60*60*24)); 
                 $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
-				$hour=24;
 				}
             }
 
@@ -61,7 +52,7 @@ class UisSyncController extends Controller
 			for($i=1;$i<=$days;$i++)
 			{
 			  	
-             for($j=1;$j<=$hour;$j++)
+             for($j=1;$j<=24;$j++)
 			  {			
 				$date_end=date("Y-m-d H:i:s", strtotime($date_from.'+ '.$j.' hours'));
                 $date_beg = date("Y-m-d H:i:s", strtotime($date_end.'- 1 hours'));
@@ -113,30 +104,20 @@ class UisSyncController extends Controller
         print_r("Start uis call_legs_report synchronization\n");
         $db_calls = new UisCallLegsReports();
 
-            date_default_timezone_set('Europe/Moscow');
-		
-            if (isset($date_range)) {
-				if ($date_range==0){
-                $date_till = date("Y-m-d H:00:00");
-				$date_from = date("Y-m-d H:00:00", strtotime($date_till.'- 1 hours'));
-				$days=1;
-				$hour=1;
-				}
+             if (isset($date_range)) {
 				if ($date_range==1){
                 $date_till = date("Y-m-d 00:00:00");
 				$date_from = date("Y-m-d 00:00:00", strtotime($date_till.'- '.$date_range.' days'));
 				$days=1;
-				$hour=24;
 				}
-				if(!is_numeric($date_range))
+				else
 				{			    
 				$date_from = date("Y-m-d 00:00:00", strtotime(explode("/",$date_range)[0]));
 				$date_till = date("Y-m-d 00:00:00", strtotime(explode("/",$date_range)[1]));
 				$diff = abs(strtotime($date_till) - strtotime($date_from)); 
-				$years   = floor($diff / (365*60*60*24)); 
+                $years   = floor($diff / (365*60*60*24)); 
                 $months  = floor(($diff - $years * 365*60*60*24) / (30*60*60*24)); 
                 $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
-				$hour=24;
 				}
             }
 			
@@ -145,7 +126,7 @@ class UisSyncController extends Controller
 			
 			for($i=1;$i<=$days;$i++)
 			 {
-              for($j=1;$j<=$hour;$j++)
+              for($j=1;$j<=24;$j++)
 			  {
 				$date_end=date("Y-m-d H:i:s", strtotime($date_from.'+ '.$j.' hours'));
                 $date_beg = date("Y-m-d H:i:s", strtotime($date_end.'- 1 hours'));

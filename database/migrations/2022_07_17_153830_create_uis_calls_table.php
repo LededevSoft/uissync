@@ -25,11 +25,12 @@ class CreateUisCallsTable extends Migration
 			$table->integer("talk_duration");
 			$table->integer("wait_duration");
 			$table->integer("total_duration");
-			$table->mediumText("cpn_region_name")->nullable();
+			$table->string("cpn_region_name")->nullable();
             $table->string("communication_id")->nullable();			
 			$table->string("communication_type")->nullable();
             $table->string("contact_phone_number")->nullable();
             $table->string("virtual_phone_number")->nullable();
+			$table->string("finish_reason")->nullable();
 
         });
     }

@@ -13,7 +13,8 @@ class UisSync extends Command
      * @var string
      */
     protected $signature = 'uis:sync
-                                {--all : For sync all data}            
+                                {--all : For sync all data}
+                                {--hours : For sync all data hours} 								
 								{--calls_report : For sync calls}
                                 {--call_legs_report : For sync call legs}
 								{--full : For sync data from all time}
@@ -62,13 +63,16 @@ class UisSync extends Command
 		}elseif ($options["calls_report"]) {
            $uis->loadUisCallsReport($date_range);
 		}elseif ($options["call_legs_report"]) {
-           $uis->loadUisCallLegsReport($date_range);   
+           $uis->loadUisCallLegsReport($date_range);
+		}elseif ($options["hours"]) {
+            $uis->loadUisCallsReport(0);		
+			$uis->loadUisCallLegsReport(0);  
 		} elseif ($options["all"]) {
             $uis->loadUisEmployees();
             $uis->loadUisTags();
             $uis->loadUisStatuses();
+			$uis->loadUisCallsReport($date_range);		
 			$uis->loadUisCallLegsReport($date_range);
-			$uis->loadUisCallsReport($date_range);
 			
         } else {
             print_r("Not supported command\n");
