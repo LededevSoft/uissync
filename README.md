@@ -1,4 +1,4 @@
-Package from AmoCRM sync data
+Package from Uis com sync data
 
 For install add to composer file:
 ````
@@ -12,5 +12,5 @@ For install add to composer file:
 
 Run console command:
 ```
-composer req adminka/amosync
+composer req lebedevsoft/uissync
 ```
